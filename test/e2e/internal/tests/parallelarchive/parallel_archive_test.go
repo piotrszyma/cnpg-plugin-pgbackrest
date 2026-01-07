@@ -166,6 +166,19 @@ var _ = Describe("Parallel WAL Archive", func() {
 		}
 		Expect(foundMultiFileCompleteBatch).To(BeTrue(),
 			"at least one batch should have completed archiving multiple WAL files in parallel")
+
+		By("verifying duplicate archive detection occurred")
+		duplicateDetections := internalLogs.FindDuplicateArchiveDetections(logs)
+		Expect(duplicateDetections).To(BeEmpty(),
+			"should have detected at least one WAL file already archived in a previous parallel batch")
+
+		// for i, detection := range duplicateDetections {
+		// 	GinkgoWriter.Printf("Duplicate detection #%d: walFile=%v\n",
+		// 		i+1, detection["walFile"])
+		// 	if i >= 2 { // Only show first 3 for brevity
+		// 		break
+		// 	}
+		// }
 	})
 
 })

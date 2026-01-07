@@ -110,3 +110,18 @@ func FindArchiveBatchCompletions(logEntries []map[string]any) []map[string]any {
 
 	return batches
 }
+
+// FindArchiveBatchCompletions finds "WAL archive batch completed" log entries and returns the parsed data.
+// Each returned map contains the structured log fields.
+func FindDuplicateArchiveDetections(logEntries []map[string]any) []map[string]any {
+	var batches []map[string]any
+
+	for _, logEntry := range logEntries {
+		// Check if this is a "WAL archive batch completed" message
+		if msg, ok := logEntry["msg"].(string); ok && msg == "WAL file already archived in previous parallel batch, returning immediately" {
+			batches = append(batches, logEntry)
+		}
+	}
+
+	return batches
+}
